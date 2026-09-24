@@ -75,6 +75,36 @@ Password:
 Password (again): 
 Superuser created successfully.
 
+# For Auth:
+pip install djangorestframework-simplejwt
+
+In config/settings.py, add:
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
+Then in config/urls.py:
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include("catalog.urls")),
+
+    path("api/auth/token/", TokenObtainPairView.as_view(), name="token-obtain"),
+    path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
+]
+
 # Verify If All Models are Logically Correct:
 Then run python manage.py makemigrations, and python manage.py showmigrations to inspect the database.
 The inspect Django itself: python manage.py check
+
+# Create Views then Serializers:
+
