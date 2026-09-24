@@ -23,8 +23,10 @@ class InventoryMovement(models.Model):
         choices=MovementType.choices,
     )
 
-    quantity = models.IntegerField()
-
+    quantity = models.PositiveIntegerField(
+        validators=[MinValueValidator(1)]
+    )
+    
     reference = models.CharField(
         max_length=255,
         blank=True,

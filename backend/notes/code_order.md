@@ -74,3 +74,7 @@ Last name: Mchunu
 Password: 
 Password (again): 
 Superuser created successfully.
+
+# Verify If All Models are Logically Correct:
+Then run python manage.py makemigrations, and python manage.py showmigrations to inspect the database.
+The inspect Django itself: python manage.py check

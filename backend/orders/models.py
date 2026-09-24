@@ -96,12 +96,12 @@ class OrderItem(models.Model):
         validators=[MinValueValidator(0)],
     )
 
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     subtotal = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.01)],
     )
 
     def __str__(self):
@@ -134,6 +134,14 @@ class OrderStatusHistory(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=~models.Q(old_status=models.F("new_status")),
+                name="order_status_must_change",
+            )
+        ]
 
     def __str__(self):
         return f"{self.order.order_number}: {self.old_status} → {self.new_status}"

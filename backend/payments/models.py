@@ -28,7 +28,7 @@ class Payment(models.Model):
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.01)],
     )
 
     currency = models.CharField(
@@ -80,7 +80,7 @@ class PaymentTransaction(models.Model):
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.01)],
     )
 
     status = models.CharField(
@@ -115,6 +115,8 @@ class Refund(models.Model):
     provider_reference = models.CharField(
         max_length=255,
         unique=True,
+        null=True,
+        blank=True,
     )
 
     reason = models.TextField(blank=True)

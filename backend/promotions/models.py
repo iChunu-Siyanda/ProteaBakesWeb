@@ -19,7 +19,7 @@ class Promotion(models.Model):
     discount_value = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0.01)],
     )
 
     minimum_order_amount = models.DecimalField(
@@ -40,6 +40,14 @@ class Promotion(models.Model):
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(expires_at__gt=models.F("starts_at")),
+                name="promotion_expires_after_start",
+            ),
+        ]
 
     def __str__(self):
         return self.code
@@ -65,6 +73,14 @@ class CouponRedemption(models.Model):
     )
 
     redeemed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["promotion", "user"],
+                name="unique_promotion_redemption_per_user",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.user.email} - {self.promotion.code}"
