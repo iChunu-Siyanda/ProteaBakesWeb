@@ -106,4 +106,4 @@ The domain models and backend architecture are currently being implemented. API 
 
 ## License
 
-This project is currently private and is not licensed for redistribution.
+This project is not licensed for redistribution.
