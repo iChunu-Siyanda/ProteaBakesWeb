@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Currency
+PAYMENT_CURRENCY = "ZAR"
+
 # Application definition
 
 INSTALLED_APPS = [
