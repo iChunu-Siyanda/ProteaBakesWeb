@@ -40,4 +40,6 @@ urlpatterns = [
     path("api/promotions/", include("promotions.urls")),
 
     path("api/reviews/", include("reviews.urls")),
+
+    path("api/notifications/",include("notifications.urls"),),
 ]
