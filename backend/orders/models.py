@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
+from decimal import Decimal
 
 
 class Order(models.Model):
@@ -43,27 +44,27 @@ class Order(models.Model):
     subtotal = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal("0"))],
     )
 
     discount_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal("0"))],
     )
 
     delivery_fee = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal("0"))],
     )
 
     total = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal("0"))],
     )
 
     customer_notes = models.TextField(blank=True)
@@ -93,7 +94,7 @@ class OrderItem(models.Model):
     unit_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(Decimal("0"))],
     )
 
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
@@ -101,7 +102,7 @@ class OrderItem(models.Model):
     subtotal = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0.01)],
+        validators=[MinValueValidator(Decimal("0.01"))],
     )
 
     def __str__(self):

@@ -108,3 +108,12 @@ The inspect Django itself: python manage.py check
 
 # Create Views then Serializers:
 
+
+# Create URLs and register them on config:
+
+
+# When Testing Errors:
+To find the exact errors:
+python -W error manage.py test 
+to be specific python -W error manage.py test orders
+

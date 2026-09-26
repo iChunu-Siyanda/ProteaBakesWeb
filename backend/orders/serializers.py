@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Order, OrderItem
 
-
 class DeliveryDataSerializer(serializers.Serializer):
     recipient_name = serializers.CharField(max_length=200)
     phone_number = serializers.CharField(max_length=30)
