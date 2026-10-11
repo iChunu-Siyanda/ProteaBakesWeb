@@ -51,6 +51,11 @@ class CartItemCreateView(APIView):
                 {"detail": "Product does not exist or is inactive."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+        except ValueError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response(
             CartItemSerializer(item).data,
@@ -75,6 +80,11 @@ class CartItemUpdateView(APIView):
             return Response(
                 {"detail": "Cart item not found."},
                 status=status.HTTP_404_NOT_FOUND,
+            )
+        except ValueError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         return Response(CartItemSerializer(item).data)

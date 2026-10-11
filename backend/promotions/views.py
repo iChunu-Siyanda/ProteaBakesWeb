@@ -74,6 +74,7 @@ class PromotionRedeemView(APIView):
                 promotion=promotion,
                 user=request.user,
                 order=order,
+                discount=discount,
             )
         except ValueError as exc:
             return Response(

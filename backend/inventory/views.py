@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import InventoryItem
+
 from .serializers import (
     InventoryRemoveSerializer,
     InventoryRestockSerializer,
@@ -23,6 +25,7 @@ class InventoryRestockView(APIView):
                 quantity=serializer.validated_data["quantity"],
                 reference=serializer.validated_data.get("reference", ""),
                 notes=serializer.validated_data.get("notes", ""),
+                user=request.user,
             )
         except ValueError as exc:
             return Response(
@@ -54,6 +57,7 @@ class InventoryRemoveView(APIView):
                 quantity=serializer.validated_data["quantity"],
                 reference=serializer.validated_data.get("reference", ""),
                 notes=serializer.validated_data.get("notes", ""),
+                user=request.user,
             )
         except ValueError as exc:
             return Response(
@@ -70,4 +74,31 @@ class InventoryRemoveView(APIView):
             },
             status=status.HTTP_200_OK,
         )
-    
+
+
+class InventoryListView(APIView):
+    """Staff stock overview. ?low_stock=1 shows only items at/below threshold."""
+
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        items = InventoryItem.objects.select_related("product").order_by(
+            "product__name"
+        )
+
+        rows = [
+            {
+                "product_id": item.product_id,
+                "product_name": item.product.name,
+                "sku": item.product.sku,
+                "quantity": item.quantity,
+                "low_stock_threshold": item.low_stock_threshold,
+                "is_low_stock": item.quantity <= item.low_stock_threshold,
+            }
+            for item in items
+        ]
+
+        if request.query_params.get("low_stock"):
+            rows = [row for row in rows if row["is_low_stock"]]
+
+        return Response(rows)

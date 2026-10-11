@@ -302,6 +302,14 @@ class AuditAPITests(APITestCase):
     def authenticate(self):
         self.client.force_authenticate(user=self.user)
 
+    def authenticate_staff(self):
+        staff = User.objects.create_user(
+            email="staff@example.com",
+            password="testpassword123",
+            is_staff=True,
+        )
+        self.client.force_authenticate(user=staff)
+
     def create_log(
         self,
         user=None,
@@ -618,8 +626,24 @@ class AuditAPITests(APITestCase):
             matching_log.id,
         )
 
-    def test_object_logs_can_contain_logs_from_multiple_users(self):
+    def test_customer_only_sees_their_own_object_logs(self):
         self.authenticate()
+
+        mine = self.create_log(user=self.user, model_name="Order", object_id="700")
+        self.create_log(user=self.other_user, model_name="Order", object_id="700")
+
+        response = self.client.get(
+            reverse(
+                "audit-object-list",
+                kwargs={"model_name": "Order", "object_id": "700"},
+            )
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([log["id"] for log in response.data], [mine.id])
+
+    def test_object_logs_can_contain_logs_from_multiple_users(self):
+        self.authenticate_staff()
 
         first = self.create_log(
             user=self.user,

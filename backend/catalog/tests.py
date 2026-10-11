@@ -82,6 +82,9 @@ class ProductSerializerTests(TestCase):
                 "images",
                 "is_active",
                 "is_made_to_order",
+                "is_available",
+                "average_rating",
+                "review_count",
             },
         )
 

@@ -1,11 +1,25 @@
+from datetime import timedelta
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.test import TestCase
 
 from catalog.models import Category, Product
 from orders.models import Order, OrderItem
 from users.models import User
+
+
+def _valid_pickup_date():
+    """A date that satisfies the pickup rules (lead time, closed weekdays)."""
+    day = timezone.localdate() + timedelta(days=settings.PICKUP_MIN_LEAD_HOURS // 24 + 3)
+    while day.weekday() in settings.PICKUP_CLOSED_WEEKDAYS:
+        day += timedelta(days=1)
+    return day.isoformat()
+
+
+PICKUP_DATE = _valid_pickup_date()
 
 
 class OrderModelTests(TestCase):
@@ -144,7 +158,7 @@ class CheckoutAPITests(APITestCase):
             reverse("checkout"),
             {
                 "fulfillment_type": "PICKUP",
-                "scheduled_date": "2026-09-30",
+                "scheduled_date": PICKUP_DATE,
                 "scheduled_time": "10:00:00",
             },
             format="json",
@@ -166,7 +180,7 @@ class CheckoutAPITests(APITestCase):
             reverse("checkout"),
             {
                 "fulfillment_type": "PICKUP",
-                "scheduled_date": "2026-09-30",
+                "scheduled_date": PICKUP_DATE,
                 "scheduled_time": "10:00:00",
             },
             format="json",
@@ -309,7 +323,7 @@ class CheckoutAPITests(APITestCase):
             reverse("checkout"),
             {
                 "fulfillment_type": "PICKUP",
-                "scheduled_date": "2026-09-30",
+                "scheduled_date": PICKUP_DATE,
                 "scheduled_time": "10:00:00",
             },
             format="json",
@@ -368,7 +382,7 @@ class CheckoutAPITests(APITestCase):
                 "fulfillment_type": "PICKUP",
                 "total": "1.00",
                 "subtotal": "1.00",
-                "scheduled_date": "2026-09-30",
+                "scheduled_date": PICKUP_DATE,
                 "scheduled_time": "10:00:00",
             },
             format="json",
@@ -404,7 +418,7 @@ class CheckoutAPITests(APITestCase):
 
         response = self.client.post(
             reverse("checkout"),
-            {"fulfillment_type": "PICKUP","scheduled_date": "2026-09-30",},
+            {"fulfillment_type": "PICKUP","scheduled_date": PICKUP_DATE,},
             format="json",
         )
 
