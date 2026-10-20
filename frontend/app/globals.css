@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-muted: #6b6b6b;
+  --color-line: #ececec;
+  --color-surface: #f7f5f4;
+  --color-accent: #9a5967; /* dusty protea pink, 5.2:1 with white text */
+  --color-accent-hover: #85495a;
+  --color-accent-soft: #f6e9ec;
+  --color-danger: #b3261e;
+  --color-success: #2f6b4f;
+
+  --spacing-section: 6rem;
+  --container-page: 80rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-page, 80rem);
+  padding-inline: 1.5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif font-medium tracking-tight;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
