@@ -4,14 +4,32 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
 import type { Product } from "@/lib/types";
+import { addToCart } from "@/lib/cart/addToCart";
+
 
 export function AddToCartButton({ product }: { product: Product }) {
   const { toast } = useToast();
   const [qty, setQty] = useState(1);
 
-  function handleAdd() {
-    // TODO Section 2: call the real cart (guest + server) here.
-    toast(`Cart wiring comes in Section 2 (${qty} x ${product.name})`, "info");
+  async function handleAdd() {
+    // setBusy(true) if you have it
+    try {
+      await addToCart(
+        {
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          price: product.price,
+          image: null, // set to the first image URL from your Product type
+        },
+        1,
+      );
+      // your existing success toast, e.g. "Added to cart"
+    } catch (e) {
+      // your existing error toast with: e instanceof Error ? e.message : "Could not add to cart"
+    } finally {
+      // setBusy(false)
+    }
   }
 
   return (

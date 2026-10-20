@@ -1,18 +1,18 @@
 export type Category = { id: number | string; name: string; slug: string };
 
 export type ProductImage = {
-  id: number | string;
+  id: string;
   image: string;
   alt_text: string;
   position: number;
 };
 
 export type Product = {
-  id: number | string;
+  id: string;
   name: string;
   slug: string;
   description: string;
-  price: string | number; // DRF sends decimals as strings
+  price: string; // DRF sends decimals as strings
   sku: string;
   category: Category | null;
   images: ProductImage[];
