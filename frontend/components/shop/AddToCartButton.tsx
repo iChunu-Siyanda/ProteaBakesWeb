@@ -6,35 +6,38 @@ import { useToast } from "@/components/ui/Toast";
 import type { Product } from "@/lib/types";
 import { addToCart } from "@/lib/cart/addToCart";
 
-
 export function AddToCartButton({ product }: { product: Product }) {
   const { toast } = useToast();
   const [qty, setQty] = useState(1);
+  const [busy, setBusy] = useState(false);
 
   async function handleAdd() {
-    // setBusy(true) if you have it
+    if (busy) return;
+
+    setBusy(true);
     try {
       await addToCart(
         {
           id: product.id,
           name: product.name,
           slug: product.slug,
-          price: product.price,
-          image: null, // set to the first image URL from your Product type
+          price: String(product.price),
+          image: null, // see note below
         },
-        1,
+        qty,
       );
-      // your existing success toast, e.g. "Added to cart"
+      toast(qty > 1 ? `Added ${qty} to cart` : "Added to cart");
+      setQty(1);
     } catch (e) {
-      // your existing error toast with: e instanceof Error ? e.message : "Could not add to cart"
+      toast(e instanceof Error ? e.message : "Could not add to cart");
     } finally {
-      // setBusy(false)
+      setBusy(false);
     }
   }
 
   return (
     <div className="flex items-stretch gap-3">
-      <div className="flex items-center border border-line">
+      <div className="flex items-center rounded-md border border-foreground/25">
         <button
           type="button"
           aria-label="Decrease quantity"
@@ -57,6 +60,7 @@ export function AddToCartButton({ product }: { product: Product }) {
       </div>
       <Button
         onClick={handleAdd}
+        loading={busy}
         disabled={!product.is_available}
         className="flex-1"
       >

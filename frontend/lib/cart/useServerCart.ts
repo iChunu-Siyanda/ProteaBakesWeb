@@ -52,7 +52,7 @@ export async function setServerQuantity(itemId: number, quantity: number) {
 }
 
 export async function removeServerItem(itemId: number) {
-  await apiFetch(`/cart/items/${itemId}`, { method: "DELETE" });
+  await apiFetch(`/cart/items/${itemId}/delete`, { method: "DELETE" });
   await refreshServerCart();
 }
 
