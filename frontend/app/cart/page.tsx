@@ -113,10 +113,7 @@ export default function CartPage() {
                 +
               </button>
               <span className="w-24 text-right">{zar(r.unit * r.quantity)}</span>
-              <button
-                className="text-sm underline"
-                onClick={() => run(r.remove)}
-              >
+              <button className="text-sm underline" onClick={() => run(r.remove)}>
                 Remove
               </button>
             </div>

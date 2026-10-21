@@ -1,10 +1,11 @@
 "use client";
 
-import { useSession } from "@/lib/auth/useSession";
+import { notifySessionChange, useSession } from "@/lib/auth/useSession";
 import { useCartCount } from "@/lib/cart/useCartCount";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
+import { resetServerCart } from "@/lib/cart/useServerCart";
 
 const NAV = [
   { href: "/shop", label: "Shop" },
@@ -32,6 +33,16 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const authenticated = useSession();
   const count = useCartCount();
+
+  const router = useRouter();
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+    resetServerCart();
+    notifySessionChange();
+    router.push("/");
+    router.refresh();
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -98,6 +109,15 @@ export function Header() {
               </span>
             )}
           </Link>
+          {authenticated && (
+            <button type="button" onClick={logout} className={iconLink} aria-label="Log out">
+              <svg {...svg}>
+                <path d="M9 4H5v16h4" />
+                <path d="M16 8l4 4-4 4" />
+                <path d="M20 12H9" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
